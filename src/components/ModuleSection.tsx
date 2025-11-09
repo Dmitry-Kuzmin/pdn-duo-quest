@@ -55,26 +55,30 @@ export const ModuleSection = ({
       </Card>
 
       <div className="relative">
-        {/* Connection line */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-border -translate-x-1/2 -z-10" />
+        {/* Animated connection road */}
+        <div className="absolute left-1/2 top-0 bottom-0 w-3 -translate-x-1/2 -z-10">
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-300 via-gray-400 to-gray-300 rounded-full" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-transparent rounded-full animate-pulse" style={{ animationDuration: "3s" }} />
+        </div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {module.lessons.map((lesson, lessonIdx) => {
             const isLessonUnlocked = isUnlocked && lessonIdx <= currentLesson + 1;
             const isActive = isUnlocked && lessonIdx === currentLesson;
             const isCompleted = isUnlocked && lessonIdx < currentLesson;
 
             return (
-              <LessonNode
-                key={lessonIdx}
-                lesson={lesson}
-                lessonIndex={lessonIdx}
-                isUnlocked={isLessonUnlocked}
-                isActive={isActive}
-                isCompleted={isCompleted}
-                onClick={() => isLessonUnlocked && onLessonClick(lessonIdx)}
-                align={lessonIdx % 2 === 0 ? "left" : "right"}
-              />
+              <div key={lessonIdx} className="relative">
+                <LessonNode
+                  lesson={lesson}
+                  lessonIndex={lessonIdx}
+                  isUnlocked={isLessonUnlocked}
+                  isActive={isActive}
+                  isCompleted={isCompleted}
+                  onClick={() => isLessonUnlocked && onLessonClick(lessonIdx)}
+                  align={lessonIdx % 2 === 0 ? "left" : "right"}
+                />
+              </div>
             );
           })}
         </div>
