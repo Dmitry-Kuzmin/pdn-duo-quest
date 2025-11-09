@@ -1,9 +1,11 @@
-import { Star, Lock, Trophy, Dumbbell, CheckCircle2 } from "lucide-react";
+import { Star, Lock, Trophy, Dumbbell, CheckCircle2, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Lesson } from "@/data/trafficModules";
+import { Card } from "@/components/ui/card";
 
 interface LessonNodeProps {
   lesson: Lesson;
+  lessonIndex: number;
   isUnlocked: boolean;
   isActive: boolean;
   isCompleted: boolean;
@@ -13,6 +15,7 @@ interface LessonNodeProps {
 
 export const LessonNode = ({
   lesson,
+  lessonIndex,
   isUnlocked,
   isActive,
   isCompleted,
@@ -20,46 +23,85 @@ export const LessonNode = ({
   align,
 }: LessonNodeProps) => {
   const getIcon = () => {
-    if (lesson.type === "story") return <Star className="w-6 h-6" />;
-    if (lesson.type === "practice") return <Dumbbell className="w-6 h-6" />;
-    if (lesson.type === "checkpoint") return <Trophy className="w-6 h-6" />;
-    return <Star className="w-6 h-6" />;
+    if (lesson.type === "story") return <Star className="w-7 h-7" />;
+    if (lesson.type === "practice") return <Dumbbell className="w-7 h-7" />;
+    if (lesson.type === "checkpoint") return <Trophy className="w-7 h-7" />;
+    return <Star className="w-7 h-7" />;
   };
 
   const getNodeStyle = () => {
-    if (!isUnlocked) return "bg-lesson-locked text-muted-foreground cursor-not-allowed";
-    if (isCompleted) return "bg-lesson-completed text-primary-foreground cursor-pointer hover:scale-110";
-    if (isActive) return "bg-lesson-active text-secondary-foreground cursor-pointer hover:scale-110 ring-4 ring-lesson-active/30";
-    return "bg-card text-foreground cursor-pointer hover:scale-105 border-2 border-border";
+    if (!isUnlocked) return "bg-gray-300 text-gray-500 cursor-not-allowed border-4 border-gray-200";
+    if (isCompleted) return "bg-gradient-to-br from-yellow-400 to-yellow-500 text-white cursor-pointer hover:scale-110 shadow-xl border-4 border-yellow-300";
+    if (isActive) return "bg-gradient-to-br from-blue-500 to-blue-600 text-white cursor-pointer hover:scale-110 ring-4 ring-blue-300 shadow-xl border-4 border-blue-400";
+    return "bg-gradient-to-br from-gray-100 to-gray-200 text-gray-700 cursor-pointer hover:scale-105 border-4 border-gray-300 shadow-lg";
+  };
+
+  const getCardStyle = () => {
+    if (!isUnlocked) return "bg-gray-50 border-gray-200";
+    if (isCompleted) return "bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200 shadow-md";
+    if (isActive) return "bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-300 shadow-lg ring-2 ring-blue-200";
+    return "bg-white border-gray-200 shadow-sm hover:shadow-md";
   };
 
   return (
-    <div className={cn("flex items-center gap-4", align === "right" && "flex-row-reverse")}>
-      {/* Spacer for alignment */}
-      <div className="flex-1" />
+    <div className="relative">
+      {/* Start label for first lesson */}
+      {lessonIndex === 0 && isActive && (
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+          <span className="px-4 py-1 bg-blue-500 text-white text-xs font-bold rounded-full uppercase tracking-wider shadow-lg">
+            Начать
+          </span>
+        </div>
+      )}
       
-      {/* Lesson node */}
-      <button
-        onClick={onClick}
-        disabled={!isUnlocked}
-        className={cn(
-          "relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg",
-          getNodeStyle()
-        )}
-      >
-        {!isUnlocked && <Lock className="w-6 h-6" />}
-        {isUnlocked && !isCompleted && getIcon()}
-        {isCompleted && <CheckCircle2 className="w-8 h-8" />}
+      <div className={cn("flex items-center gap-6", align === "right" && "flex-row-reverse")}>
+        {/* Info Card */}
+        <Card className={cn(
+          "flex-1 p-4 transition-all duration-300",
+          getCardStyle(),
+          align === "right" ? "text-right" : "text-left"
+        )}>
+          <div className="flex items-center gap-3" style={{ flexDirection: align === "right" ? "row-reverse" : "row" }}>
+            <div className="flex-shrink-0">
+              <div className={cn(
+                "w-12 h-12 rounded-xl flex items-center justify-center",
+                !isUnlocked && "bg-gray-200",
+                isCompleted && "bg-gradient-to-br from-yellow-400 to-orange-400",
+                isActive && "bg-gradient-to-br from-blue-400 to-cyan-400",
+                !isCompleted && !isActive && isUnlocked && "bg-gradient-to-br from-gray-200 to-gray-300"
+              )}>
+                {lesson.type === "story" && <BookOpen className="w-6 h-6 text-white" />}
+                {lesson.type === "practice" && <Dumbbell className="w-6 h-6 text-white" />}
+                {lesson.type === "checkpoint" && <Trophy className="w-6 h-6 text-white" />}
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-base font-bold text-foreground truncate">{lesson.title}</p>
+              <p className="text-sm text-muted-foreground truncate">{lesson.subtitle}</p>
+            </div>
+          </div>
+        </Card>
         
-        {isActive && (
-          <div className="absolute inset-0 rounded-full bg-lesson-active/20 animate-pulse" />
-        )}
-      </button>
-
-      {/* Lesson info */}
-      <div className={cn("flex-1", align === "right" && "text-right")}>
-        <p className="text-sm font-bold text-foreground">{lesson.title}</p>
-        <p className="text-xs text-muted-foreground">{lesson.subtitle}</p>
+        {/* Lesson node button */}
+        <button
+          onClick={onClick}
+          disabled={!isUnlocked}
+          className={cn(
+            "relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0",
+            getNodeStyle()
+          )}
+        >
+          {!isUnlocked && <Lock className="w-8 h-8" />}
+          {isUnlocked && !isCompleted && getIcon()}
+          {isCompleted && <CheckCircle2 className="w-10 h-10" />}
+          
+          {isActive && (
+            <>
+              <div className="absolute inset-0 rounded-full bg-blue-400/30 animate-pulse" />
+              <div className="absolute -inset-2 rounded-full border-4 border-blue-400/40 animate-ping" style={{ animationDuration: "2s" }} />
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
