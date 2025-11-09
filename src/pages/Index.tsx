@@ -1,11 +1,37 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { LearningPath } from "@/components/LearningPath";
+import { StatsHeader } from "@/components/StatsHeader";
+import { DailyChallenges } from "@/components/DailyChallenges";
+import { LeagueInfo } from "@/components/LeagueInfo";
 
 const Index = () => {
+  const [currentModule, setCurrentModule] = useState(0);
+  const [currentLesson, setCurrentLesson] = useState(0);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background">
+      <StatsHeader />
+      
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6">
+          {/* Main learning path */}
+          <div className="order-2 lg:order-1">
+            <LearningPath 
+              currentModule={currentModule}
+              currentLesson={currentLesson}
+              onLessonClick={(moduleIdx, lessonIdx) => {
+                setCurrentModule(moduleIdx);
+                setCurrentLesson(lessonIdx);
+              }}
+            />
+          </div>
+
+          {/* Sidebar */}
+          <div className="order-1 lg:order-2 space-y-4">
+            <LeagueInfo />
+            <DailyChallenges />
+          </div>
+        </div>
       </div>
     </div>
   );
