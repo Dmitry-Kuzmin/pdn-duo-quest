@@ -3,6 +3,7 @@ import { LearningPath } from "@/components/LearningPath";
 import { StatsHeader } from "@/components/StatsHeader";
 import { DailyChallenges } from "@/components/DailyChallenges";
 import { LeagueInfo } from "@/components/LeagueInfo";
+import { DailyRewards } from "@/components/DailyRewards";
 
 const Index = () => {
   const [currentModule, setCurrentModule] = useState(0);
@@ -28,6 +29,7 @@ const Index = () => {
 
           {/* Sidebar */}
           <div className="order-1 lg:order-2 space-y-4">
+            <DailyRewards />
             <LeagueInfo />
             <DailyChallenges />
           </div>
