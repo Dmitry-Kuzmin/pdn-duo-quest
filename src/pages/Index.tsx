@@ -13,7 +13,12 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <StatsHeader />
       
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        {/* Daily Rewards - Full Width Premium Section */}
+        <div className="mb-8">
+          <DailyRewards />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6">
           {/* Main learning path */}
           <div className="order-2 lg:order-1">
@@ -29,7 +34,6 @@ const Index = () => {
 
           {/* Sidebar */}
           <div className="order-1 lg:order-2 space-y-4">
-            <DailyRewards />
             <LeagueInfo />
             <DailyChallenges />
           </div>
