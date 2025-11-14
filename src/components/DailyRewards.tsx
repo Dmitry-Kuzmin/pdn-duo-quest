@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import { Gift, Flame } from "lucide-react";
 import { useState } from "react";
 
@@ -16,27 +15,36 @@ export const DailyRewards = () => {
   const [currentStreak] = useState(3);
 
   return (
-    <Card className="p-6 bg-card border-border">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Gift className="w-5 h-5 text-primary" />
+    <div className="relative rounded-3xl p-8 bg-white/40 dark:bg-white/5 backdrop-blur-2xl border border-white/20 shadow-xl">
+      {/* Gradient background orbs */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-accent/20 to-warning/20 rounded-full blur-3xl -z-10" />
+      
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-2xl blur-lg opacity-50" />
+            <div className="relative p-3 bg-gradient-to-br from-primary to-secondary rounded-2xl">
+              <Gift className="w-6 h-6 text-white" />
+            </div>
           </div>
           <div>
-            <h2 className="text-lg font-bold text-foreground">Ежедневные награды</h2>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <h2 className="text-xl font-bold text-foreground mb-1">Ежедневные награды</h2>
+            <div className="flex items-center gap-2 text-sm">
               <Flame className="w-4 h-4 text-warning" />
-              <span>Серия: {currentStreak} дня</span>
+              <span className="text-muted-foreground">Серия: <span className="font-semibold text-foreground">{currentStreak} дня</span></span>
             </div>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-foreground">{rewardData[currentStreak - 1]?.reward || 0}</div>
+          <div className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            {rewardData[currentStreak - 1]?.reward || 0}
+          </div>
           <div className="text-xs text-muted-foreground">гемов сегодня</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-3 mb-4">
+      <div className="grid grid-cols-7 gap-4 mb-6">
         {rewardData.map((item) => {
           const isToday = item.day === currentStreak + 1;
           const isClaimed = item.claimed;
@@ -44,50 +52,63 @@ export const DailyRewards = () => {
           return (
             <div
               key={item.day}
-              className={`relative aspect-square rounded-xl flex flex-col items-center justify-center p-3 transition-all ${
-                isClaimed
-                  ? "bg-success/10 border-2 border-success/20"
-                  : isToday
-                    ? "bg-primary border-2 border-primary cursor-pointer hover:scale-105"
-                    : "bg-muted/50 border border-border/50"
+              className={`relative group transition-all duration-300 ${
+                isToday ? "scale-105" : ""
               }`}
             >
-              <div className={`text-2xl font-bold mb-1 ${
-                isClaimed || isToday ? "text-foreground" : "text-muted-foreground"
-              }`}>
-                {item.day}
-              </div>
+              {/* Glow effect for today */}
+              {isToday && (
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-2xl blur-xl opacity-60 animate-pulse" />
+              )}
               
-              <div className={`flex items-center gap-1 text-xs font-semibold ${
-                isClaimed ? "text-success" : isToday ? "text-primary-foreground" : "text-muted-foreground"
-              }`}>
-                {isClaimed ? (
-                  <span>✓</span>
-                ) : (
-                  <>
-                    <Gift className="w-3 h-3" />
-                    <span>{item.reward}</span>
-                  </>
-                )}
+              <div
+                className={`relative aspect-square rounded-2xl flex flex-col items-center justify-center p-4 backdrop-blur-xl border transition-all ${
+                  isClaimed
+                    ? "bg-success/20 border-success/30"
+                    : isToday
+                      ? "bg-gradient-to-br from-primary/20 to-secondary/20 border-white/30 cursor-pointer hover:scale-110"
+                      : "bg-white/30 dark:bg-white/5 border-white/20"
+                }`}
+              >
+                <div className={`text-2xl font-bold mb-2 ${
+                  isClaimed ? "text-success" : isToday ? "text-foreground" : "text-muted-foreground"
+                }`}>
+                  {item.day}
+                </div>
+                
+                <div className={`flex items-center gap-1 text-xs font-semibold ${
+                  isClaimed ? "text-success" : isToday ? "text-foreground" : "text-muted-foreground"
+                }`}>
+                  {isClaimed ? (
+                    <span className="text-lg">✓</span>
+                  ) : (
+                    <>
+                      <Gift className="w-3 h-3" />
+                      <span>{item.reward}</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
-      <div className="space-y-2">
-        <div className="h-2 bg-muted rounded-full overflow-hidden">
+      <div className="space-y-3">
+        <div className="relative h-3 rounded-full bg-white/30 dark:bg-white/10 backdrop-blur-xl overflow-hidden border border-white/20">
           <div 
-            className="h-full bg-gradient-to-r from-success to-primary transition-all duration-500"
+            className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-secondary to-accent rounded-full transition-all duration-700"
             style={{ width: `${(currentStreak / 7) * 100}%` }}
-          />
+          >
+            <div className="absolute inset-0 bg-white/20 animate-pulse" />
+          </div>
         </div>
         
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{currentStreak}/7 дней</span>
-          <span>Еще {7 - currentStreak} {7 - currentStreak === 1 ? "день" : "дня"} до бонуса</span>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">{currentStreak}/7 дней</span>
+          <span className="font-medium text-foreground">Еще {7 - currentStreak} {7 - currentStreak === 1 ? "день" : "дня"} до бонуса</span>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
